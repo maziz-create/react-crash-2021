@@ -47,7 +47,7 @@ const TaskDetails = () => {
         <h2>Task Details</h2>
         <p>Id: {taskDetail?.id}</p>
         <p>Day: {taskDetail?.day}</p>
-        <p>Reminder: {taskDetail?.reminder}</p>
+        <p>Reminder: {taskDetail?.reminder ? "True" : "False"}</p>
         <p>Content: {taskDetail?.text}</p>
         <Button onClick={() => navigate(-1)} text="<- Back" />
       </div>
