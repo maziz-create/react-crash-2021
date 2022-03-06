@@ -10,32 +10,36 @@ const TaskDetails = () => {
   const { taskId } = useParams();
 
   // id ? `${id}` : null demek ile alttaki gibi callback vermek aynı şeyler.
-  const { data: taskDetail } = useSWR(() => `tasks/${taskId}`, fetcher, {
-    onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
-      if (error.status === 404) {
-        console.log("heyy!");
-        return;
-      }
+  const { data: taskDetail, error: taskDetailError } = useSWR(
+    () => `tasks/${taskId}`,
+    fetcher,
+    {
+      onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+        if (error.status === 404) {
+          navigate("/");
+          return;
+        }
+        // if (key === "tasks/51") {
+        //   console.log("Access to area 51 is denied!");
+        // }
 
-      if (key === "/tasks/51") {
-        console.log("Access to area 51 is denied!");
-      }
+        // if (retryCount >= 2) {
+        //   console.log("You have requested more than 10 times!");
+        // }
 
-      if (retryCount >= 10) {
-        console.log("You have requested more than 10 times!");
-      }
+        // setTimeout(() => revalidate({ retryCount }), 5000);
+      },
+    }
+  );
 
-      // setTimeout(() => revalidate({ retryCount }), 5000);
-    },
-  });
+  // bu ile onErrorRetry içindeki error aynı işlevi görüyor bu projede.
+  // if (taskDetailError) {
+  //   return <div>Failed to fetcH!</div>;
+  // }
 
   if (!taskDetail) {
     return <div>Loading...</div>;
   }
-
-  // if (taskDetailError) {
-  //   navigate("/");
-  // }
 
   return (
     <>
