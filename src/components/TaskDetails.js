@@ -10,10 +10,32 @@ const TaskDetails = () => {
   const { taskId } = useParams();
 
   // id ? `${id}` : null demek ile alttaki gibi callback vermek aynı şeyler.
-  const { data: taskDetail, error: taskDetailError } = useSWR(
-    () => `tasks/${taskId}`,
-    fetcher
-  );
+  const { data: taskDetail } = useSWR(() => `tasks/${taskId}`, fetcher, {
+    onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+      if (error.status === 404) {
+        console.log("heyy!");
+        return;
+      }
+
+      if (key === "/tasks/51") {
+        console.log("Access to area 51 is denied!");
+      }
+
+      if (retryCount >= 10) {
+        console.log("You have requested more than 10 times!");
+      }
+
+      // setTimeout(() => revalidate({ retryCount }), 5000);
+    },
+  });
+
+  if (!taskDetail) {
+    return <div>Loading...</div>;
+  }
+
+  // if (taskDetailError) {
+  //   navigate("/");
+  // }
 
   return (
     <>
